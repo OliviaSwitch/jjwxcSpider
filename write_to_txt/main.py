@@ -14,13 +14,15 @@ def login_with_cookie(cookies):
         "cookie":cookies,
         "User-Agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36 Edg/81.0.416.72"
     }
-    r = session.get("https://m.jjwxc.net//my", headers = headers)
+    session.headers.update(headers)
+    r = session.get("https://m.jjwxc.net//my")
     r.encoding = 'GBK'
     soup = BeautifulSoup(r.text,'html.parser')
+    print(r.text[3000:-1000])
     if soup.select("h2")[0].get_text() == "首页>我的晋江":
         print("登陆成功")
     else:
-        print("登陆失败")
+        print("cookie失效")
     return session
 
 def login_with_password(username, password):
@@ -36,6 +38,7 @@ def login_with_password(username, password):
 
     r.encoding = 'GBK'
     soup = BeautifulSoup(r.text,'html.parser')
+    #print(r.text[3000:-1000])
     if soup.select("h2")[0].get_text() == "首页>我的晋江":
         print("登陆成功")
     else:
@@ -105,6 +108,8 @@ def get_contents(novelid, VIP, session):
 def get_all_text(url, session):
     r = session.get(url)
     r.encoding = 'GBK'
+    #print(r.text[3000:-1000])
+
     soup = BeautifulSoup(r.text,'html.parser')
     all_text = soup.select("ul")[0].select("li")
     text = ""
@@ -114,12 +119,14 @@ def get_all_text(url, session):
         text = text + "\n————————————\n" + sort_text_2
     return text
 
-def get_free_text(novelids):
+def get_novel(novelids, login, session):
     for novelid in novelids:
-        session = requests.session()
+        #session = requests.session()
         summary = get_summary(novelid, session)
         intro = get_intro(novelid, session)
-        author, name, contents = get_contents(novelid, False, session)
+        author, name, contents = get_contents(novelid, login, session)
+        
+
         file_name = name + "_" + author + ".txt"
         print(file_name)
         with open(file_name, "w", encoding="utf-8") as f:
@@ -143,4 +150,6 @@ if __name__ == "__main__":
         else:
             session = login_with_password(config["loginname"], config["loginpass"])
     else:
-        get_free_text(config["novelids"])
+        session = requests.session()
+    
+    get_novel(config["novelids"],config["login"], session)
