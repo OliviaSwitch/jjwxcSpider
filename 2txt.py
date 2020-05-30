@@ -38,7 +38,7 @@ def login_with_password(username, password):
 
     r.encoding = 'GBK'
     soup = BeautifulSoup(r.text,'html.parser')
-    #print(r.text[3000:-1000])
+    print(r.text[3000:-1000])
     if soup.select("h2")[0].get_text() == "首页>我的晋江":
         print("登陆成功")
     else:

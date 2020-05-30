@@ -1,8 +1,8 @@
 {
-    "login":true,
-    "cookie_login":true,
-    "loginname":"",
-    "loginpass":"",
+    "login":false,
+    "cookie_login":false,
+    "loginname":"15967578281",
+    "loginpass":"jiangxinwin",
     "cookies":"",
-    "novelids":[4211096,971,467026,45689,230991]
+    "novelids":[3938493, 4138332, 3276200]
 }
