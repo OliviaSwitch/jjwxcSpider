@@ -10,3 +10,7 @@
     - 网页端这在地址栏中，跟在“novelid”后
 
 再使用python直接运行“2txt.py”
+
+## 所需库
+- requests
+- beautifulsoup4
