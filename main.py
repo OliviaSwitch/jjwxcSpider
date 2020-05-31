@@ -11,11 +11,12 @@ def get_config():
 def login_with_cookie(cookies):
     session = requests.session()
     headers = {
-        "cookie":cookies,
-        "User-Agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36 Edg/81.0.416.72"
+        "User-Agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36 Edg/81.0.416.72",
+        "Cookie":cookies
     }
-    session.headers.update(headers)
-    r = session.get("https://m.jjwxc.net//my")
+    #session.headers.update(headers)
+    #print(session.headers)
+    r = session.get("https://m.jjwxc.net//my", headers=headers)
     r.encoding = 'GBK'
     soup = BeautifulSoup(r.text,'html.parser')
     print(r.text[3000:-1000])
@@ -23,6 +24,7 @@ def login_with_cookie(cookies):
         print("登陆成功")
     else:
         print("cookie失效")
+    session.headers.update(headers)
     return session
 
 def login_with_password(username, password):
@@ -93,7 +95,7 @@ def get_contents(novelid, VIP, session):
             chapter = content_html.select("td")[0].get_text(strip=True)
             title = content_html.select("td")[1].get_text(strip=True)
             summary = content_html.select("td")[2].get_text(strip=True)
-            link = "https://m.jjwxc.net/" + get_link(novelid, i, session)
+            link = "https://m.jjwxc.net" + get_link(novelid, i, session)
             contents.append([1,[chapter, title, summary], link])
             i += 1
             if not VIP:
@@ -109,7 +111,7 @@ def get_all_text(url, session):
     r = session.get(url)
     r.encoding = 'GBK'
     #print(r.text[3000:-1000])
-
+    
     soup = BeautifulSoup(r.text,'html.parser')
     all_text = soup.select("ul")[0].select("li")
     text = ""
@@ -126,11 +128,10 @@ def get_novel(novelids, login, session):
         intro = get_intro(novelid, session)
         author, name, contents = get_contents(novelid, login, session)
         
-
         file_name = name + "_" + author + ".txt"
         print(file_name)
         with open(file_name, "w", encoding="utf-8") as f:
-            f.write(name + "_" + author + "\n\n" + intro + summary + "\n\n\n")
+            f.write(name + "_" + author + "\n\n" + intro + "\n" + summary + "\n\n\n")
             for chapter in contents:
                 if chapter[0] == 1:
                     text = get_all_text(chapter[2], session)
@@ -151,5 +152,8 @@ if __name__ == "__main__":
             session = login_with_password(config["loginname"], config["loginpass"])
     else:
         session = requests.session()
-    
+    r = session.get("https://m.jjwxc.net/vip/3938493/29?ctime=1516600926")
+    r.encoding = 'GBK'
+    print(r.text)
+    print(session.headers)
     get_novel(config["novelids"],config["login"], session)

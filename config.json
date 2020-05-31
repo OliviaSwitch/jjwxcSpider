@@ -1,6 +1,6 @@
 {
-    "login":false,
-    "cookie_login":false,
+    "login":true,
+    "cookie_login":true,
     "loginname":"",
     "loginpass":"",
     "cookies":"",

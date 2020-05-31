@@ -1,7 +1,7 @@
 # jjwxcSpide
 ## 关于使用
 先设置“comfig.json”。
-- "login"填"true"or"false"选择是否需要登录，如果需要登录则继续选填以下几项。
+- "login"填"true"or"false"选择是否需要登录，如果需要登录则继续选填以下几项。（！cookie好像不能登录
 - "cookie_login"填"true"or"false"选择是否需要使用cookie登录，如果使用cookie登录，则将cookie填入引号内。如果使用密码登录，则将晋江邮箱或笔名或手机号填入"loginname"中，将密码填入"loginpass"中。
   - cookie的获取：使用chrome或其它浏览器，打开开发者工具，在控制台中输入：document.cookie
 - 将你需要下载的晋江小说书号填入"novelids"中。
