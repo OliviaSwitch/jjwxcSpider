@@ -11,20 +11,21 @@ def get_config():
 def login_with_cookie(cookies):
     session = requests.session()
     headers = {
-        "User-Agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36 Edg/81.0.416.72",
-        "Cookie":cookies
+        "User-Agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36 Edg/81.0.416.72"
     }
-    #session.headers.update(headers)
-    #print(session.headers)
+    cookie = {}
+    for i in cookies.split(";"):
+        value = i.split("=")
+        cookie[value[0]] = value[1]
+    session.cookies.update(cookie)
     r = session.get("https://m.jjwxc.net//my", headers=headers)
     r.encoding = 'GBK'
     soup = BeautifulSoup(r.text,'html.parser')
-    print(r.text[3000:-1000])
+    #print(r.text[3000:-1000])
     if soup.select("h2")[0].get_text() == "首页>我的晋江":
         print("登陆成功")
     else:
         print("cookie失效")
-    session.headers.update(headers)
     return session
 
 def login_with_password(username, password):
@@ -40,7 +41,7 @@ def login_with_password(username, password):
 
     r.encoding = 'GBK'
     soup = BeautifulSoup(r.text,'html.parser')
-    print(r.text[3000:-1000])
+    #print(r.text[3000:-1000])
     if soup.select("h2")[0].get_text() == "首页>我的晋江":
         print("登陆成功")
     else:
@@ -89,6 +90,7 @@ def get_contents(novelid, VIP, session):
     contents = []
     i = 0
     for content_html in contents_html:
+        #print(i)
         try:
             contents.append([0,content_html.select('td > b')[0].get_text()])
         except:
@@ -152,8 +154,4 @@ if __name__ == "__main__":
             session = login_with_password(config["loginname"], config["loginpass"])
     else:
         session = requests.session()
-    r = session.get("https://m.jjwxc.net/vip/3938493/29?ctime=1516600926")
-    r.encoding = 'GBK'
-    print(r.text)
-    print(session.headers)
     get_novel(config["novelids"],config["login"], session)

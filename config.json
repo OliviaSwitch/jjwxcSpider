@@ -1,8 +1,8 @@
 {
-    "login":true,
+    "login":false,
     "cookie_login":true,
     "loginname":"",
     "loginpass":"",
     "cookies":"",
-    "novelids":[3938493, 4138332]
+    "novelids":[4206995,4032130]
 }
