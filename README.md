@@ -9,7 +9,7 @@
     - app端可以点开作者专栏，每本小说的右上角就有。
     - 网页端这在地址栏中，跟在“novelid”后
 
-再使用python直接运行“2txt.py”
+再使用python直接运行“main.py”
 
 ## 所需库
 - requests
