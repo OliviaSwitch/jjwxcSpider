@@ -116,11 +116,22 @@ def get_all_text(url, session):
     
     soup = BeautifulSoup(r.text,'html.parser')
     all_text = soup.select("ul")[0].select("li")
-    text = ""
+    '''
+    text_1 = all_text[0]
+    sort_text_1 = "\n".join(text_1.get_text("<br/>").split("<br/>"))
+    text_1 = "  ".join(sort_text_1.split("\u3000"))
+    text_2 = all_text[1]
+    sort_text_1 = "\n".join(text_2.get_text("<br/>").split("<br/>"))
+    text_2 = "  ".join(sort_text_1.split("\u3000"))
+    text = text_1 + "\n————————\n" + text_2 + "\n"
+    '''
+    text_list = []
     for li in all_text:
         sort_text_1 = "\n".join(li.get_text("<br/>").split("<br/>"))
         sort_text_2 = "  ".join(sort_text_1.split("\u3000"))
-        text = text + "\n————————————\n" + sort_text_2
+        text_list.append(sort_text_2)
+        #text = text + "\n————————————\n" + sort_text_2
+    text = "\n————————————\n".join(text_list) + "\n"
     return text
 
 def get_novel(novelids, login, session):
