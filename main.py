@@ -2,6 +2,7 @@
 import requests
 from bs4 import BeautifulSoup
 import json
+from epub import Epub
 
 def get_config():
     with open("config.json", 'r') as f:
@@ -116,15 +117,6 @@ def get_all_text(url, session):
     
     soup = BeautifulSoup(r.text,'html.parser')
     all_text = soup.select("ul")[0].select("li")
-    '''
-    text_1 = all_text[0]
-    sort_text_1 = "\n".join(text_1.get_text("<br/>").split("<br/>"))
-    text_1 = "  ".join(sort_text_1.split("\u3000"))
-    text_2 = all_text[1]
-    sort_text_1 = "\n".join(text_2.get_text("<br/>").split("<br/>"))
-    text_2 = "  ".join(sort_text_1.split("\u3000"))
-    text = text_1 + "\n————————\n" + text_2 + "\n"
-    '''
     text_list = []
     for li in all_text:
         sort_text_1 = "\n".join(li.get_text("<br/>").split("<br/>"))
@@ -134,7 +126,7 @@ def get_all_text(url, session):
     text = "\n————————————\n".join(text_list) + "\n"
     return text
 
-def get_novel(novelids, login, session):
+def write_to_txt(novelids, login, session):
     for novelid in novelids:
         #session = requests.session()
         summary = get_summary(novelid, session)
@@ -146,7 +138,7 @@ def get_novel(novelids, login, session):
         with open(file_name, "w", encoding="utf-8") as f:
             f.write(name + "_" + author + "\n\n" + intro + "\n" + summary + "\n\n\n")
             for chapter in contents:
-                if chapter[0] == 1:
+                if chapter[0]:
                     text = get_all_text(chapter[2], session)
                     title = chapter[1][0] + "   " + chapter[1][1] + "\n" + chapter[1][2] + "\n"
                     f.write(title + text + "\n\n")
@@ -155,6 +147,32 @@ def get_novel(novelids, login, session):
                     f.write("\n\n————" + chapter[1] + "————\n\n")
                     print(chapter[1])
         print("done")
+
+def get_pic(novelid, file_name, session):
+    r = session.get("http://www.jjwxc.net/onebook.php?novelid=" + str(novelid))
+    r.encoding = 'GBK'
+    soup = BeautifulSoup(r.text,'html.parser')
+    pic_url = soup.select("img.noveldefaultimage")[0].get("src")
+    p = session.get(pic_url)
+    filename = file_name + "\\OEBPS\\Images\\cover.jpg" 
+    with open(filename, "wb") as f:
+        f.write(p.content)
+
+def write_to_epub(novelids, login, session):
+    for novelid in novelids:
+        e = Epub()
+        e.summary = get_summary(novelid, session)
+        e.intro = get_intro(novelid, session)
+        e.author, e.name, contents = get_contents(novelid, login, session)
+        e.init()
+        get_pic(novelid, e.filename, session)
+        e.write_coverandintro()
+        e.write_chapters(contents)
+        for chapter in contents:
+            if chapter[0]:
+                text = get_all_text(chapter[2], session)
+                e.write_text(chapter[1], text)
+        e.packet()
 
 if __name__ == "__main__":
     config = get_config()
@@ -165,4 +183,5 @@ if __name__ == "__main__":
             session = login_with_password(config["loginname"], config["loginpass"])
     else:
         session = requests.session()
-    get_novel(config["novelids"],config["login"], session)
+    write_to_txt(config["novelids"],config["login"], session)
+    #write_to_epub(config["novelids"],config["login"], session)
