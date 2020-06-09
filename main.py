@@ -134,15 +134,20 @@ def write_to_txt(novelids, login, session):
         intro = get_intro(novelid, session)
         author, name, contents = get_contents(novelid, login, session)
         
+        
         file_name = name + "_" + author + ".txt"
+        '''
+        while path.exists(file_name):
+            file_name = file_name + "_1"
+        '''
         print(file_name)
         with open(file_name, "w", encoding="utf-8") as f:
             f.write(name + "_" + author + "\n\n" + intro + "\n" + summary + "\n\n\n")
             for chapter in contents:
                 if chapter[0]:
                     text = get_all_text(chapter[2], session)
-                    title = chapter[1][0] + "   " + chapter[1][1] + "\n" + chapter[1][2] + "\n"
-                    f.write(title + text + "\n\n")
+                    title = chapter[1][0] + "   " + chapter[1][1] + "\n" + chapter[1][2]
+                    f.write(title + "\n" + text + "\n\n")
                     print(title)
                 else:
                     f.write("\n\n————" + chapter[1] + "————\n\n")
@@ -155,9 +160,7 @@ def get_pic(novelid, file_name, session):
     soup = BeautifulSoup(r.text,'html.parser')
     pic_url = soup.select("img.noveldefaultimage")[0].get("src")
     p = session.get(pic_url)
-    filename = path.join(file_name, "OEBPS", "Images", "cover.jpg")
-    with open(filename, "wb") as f:
-        f.write(p.content)
+    return p.content
 
 def write_to_epub(novelids, login, session):
     for novelid in novelids:
@@ -166,7 +169,8 @@ def write_to_epub(novelids, login, session):
         e.intro = get_intro(novelid, session)
         e.author, e.name, contents = get_contents(novelid, login, session)
         e.init()
-        get_pic(novelid, e.filename, session)
+        pic_con = get_pic(novelid, e.filename, session)
+        e.write_pic(pic_con)
         e.write_coverandintro()
         e.write_chapters(contents)
         for chapter in contents:
@@ -184,5 +188,7 @@ if __name__ == "__main__":
             session = login_with_password(config["loginname"], config["loginpass"])
     else:
         session = requests.session()
-    #write_to_txt(config["novelids"],config["login"], session)
-    write_to_epub(config["novelids"],config["login"], session)
+    if not config["epub"]:
+    	write_to_txt(config["novelids"],config["login"], session)
+    else:
+    	write_to_epub(config["novelids"],config["login"], session)

@@ -1,5 +1,6 @@
 {
     "login":false,
+    "epub":true,
     "cookie_login":true,
     "loginname":"",
     "loginpass":"",

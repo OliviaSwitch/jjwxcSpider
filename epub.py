@@ -1,6 +1,7 @@
 # -*- coding: UTF-8 -*-
 import zipfile
 import os
+from shutil import rmtree
 
 class Epub():
     def __init__(self):
@@ -49,6 +50,11 @@ class Epub():
 </head>
             ''')
             f.write("\n<docTitle>\n<text>%s</text>\n</docTitle>" %self.name)
+
+    def write_pic(self, content):
+        filename = os.path.join(self.filename, "OEBPS", "Images", "cover.jpg")
+        with open(filename, "wb") as f:
+            f.write(content)
 
     def re_sort_cons(self,contents):
         i = 0
@@ -126,7 +132,7 @@ class Epub():
                 		f.write('\n        <text>{0} {1}</text>'.format(chap[0], chap[1]))
                 		f.write('\n      </navLabel>')
                 		f.write('\n      <content src="Text/{}.xhtml"/>'.format("chap_"+chap[0]))
-                		f.write('\n    </navPiont>')
+                		f.write('\n    </navPoint>')
                 f.write('\n  </navPoint>')
             f.write("\n</navMap>")
         
@@ -194,4 +200,5 @@ class Epub():
         	new_file = sep.join(file.split(sep)[1:])
         	z.write(file, new_file)
         	print(file)
+        rmtree(self.filename)
         z.close()
