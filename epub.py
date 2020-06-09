@@ -12,23 +12,21 @@ class Epub():
     def init(self):
         name, author = self.name, self.author
         self.filename = name + "_" + author
-        try:
-            os.mkdir(self.filename)
-        except:
+        while os.path.exists(self.filename):
             self.filename = self.filename + "_1"
-            os.mkdir(self.filename)
-        os.mkdir(self.filename + "\\META-INF")
-        os.mkdir(self.filename + "\\OEBPS")
-        os.mkdir(self.filename + "\\OEBPS\\Text")
-        os.mkdir(self.filename + "\\OEBPS\\Images")
+        os.mkdir(self.filename)
+        os.mkdir(os.path.join(self.filename, "META-INF"))
+        os.mkdir(os.path.join(self.filename, "OEBPS"))
+        os.mkdir(os.path.join(self.filename, "OEBPS", "Text"))
+        os.mkdir(os.path.join(self.filename, "OEBPS", "Images"))
         #os.mkdir(self.filename + "\\OEBPS\\Styles")
-        with open(self.filename + "\\mimetype", "a", encoding="utf-8") as f:
+        with open(os.path.join(self.filename, "mimetype"), "a", encoding="utf-8") as f:
             f.write("application/epub+zip")
-        with open(self.filename + "\\META-INF\\container.xml", "a", encoding="utf-8") as f:
+        with open(os.path.join(self.filename, "META-INF", "container.xml"), "a", encoding="utf-8") as f:
             f.write('<?xml version="1.0" encoding="UTF-8"?>\n')
             f.write('<container version="1.0" xmlns="urn:oasis:names:tc:opendocument:xmlns:container">\n')
             f.write('<rootfiles>\n  <rootfile full-path="OEBPS/content.opf" media-type="application/oebps-package+xml"/>\n</rootfiles>\n</container>')
-        with open(self.filename + "\\OEBPS\\content.opf", "a", encoding="utf-8") as f:
+        with open(os.path.join(self.filename,"OEBPS", "content.opf"), "a", encoding="utf-8") as f:
             f.write('''<?xml version="1.0" encoding="utf-8"?>
 <package version="2.0" unique-identifier="uid" xmlns="http://www.idpf.org/2007/opf">
             ''')
@@ -39,7 +37,7 @@ class Epub():
             f.write("\n    <dc:description>%s</dc:description>" %self.summary)
             f.write('\n    <meta content="cover.jpg" name="cover" />')
             f.write('\n    <meta content="utf-8" name="output encoding" />\n  </metadata>\n')
-        with open(self.filename + "\\OEBPS\\toc.ncx", "a", encoding="utf-8") as f:
+        with open(os.path.join(self.filename, "OEBPS", "toc.ncx"), "a", encoding="utf-8") as f:
             f.write('''<?xml version='1.0' encoding='utf-8'?>
 <ncx xmlns="http://www.daisy.org/z3986/2005/ncx/" version="2005-1" xml:lang="zh">
 
@@ -55,17 +53,23 @@ class Epub():
     def re_sort_cons(self,contents):
         i = 0
         cons = []
-        for chap in contents:
-            if not chap[0]:
-                roll = [chap[1]]
-                cons.append(roll)
-                i += 1
-            else:
-                cons[i - 1].append(chap[1])
-        return cons
+        try:
+            for chap in contents:
+                if not chap[0]:
+                    roll = [chap[1]]
+                    cons.append(roll)
+                    i += 1
+                else:
+                    cons[i - 1].append(chap[1])
+            flag = True
+        except:
+            for chap in contents:
+                cons.append(chap[1])
+            flag = False
+        return cons, flag
 
     def write_chapters(self, contents):
-        with open(self.filename + "\\OEBPS\\content.opf", "a", encoding="utf-8") as f:
+        with open(os.path.join(self.filename, "OEBPS", "content.opf"), "a", encoding="utf-8") as f:
             f.write("\n  <manifest>")
             f.write('\n    <item id="cover.xhtml" href="Text/cover.xhtml" media-type="application/xhtml+xml"/>')
             f.write('\n    <item id="intro.xhtml" href="Text/intro.xhtml" media-type="application/xhtml+xml"/>')
@@ -82,8 +86,8 @@ class Epub():
                 if chap[0]:
                     f.write('\n    <itemref idref="{}.xhtml"/>'.format("chap_" + chap[1][0]))
             f.write('\n  </spine>')
-        with open(self.filename + "\\OEBPS\\toc.ncx", "a", encoding="utf-8") as f:
-            f.write("\n<navMap>")
+        with open(os.path.join(self.filename, "OEBPS", "toc.ncx"), "a", encoding="utf-8") as f:
+            f.write("\n<navMap>\n")
             f.write('''  <navPoint id="np_1" playOrder="1">
     <navLabel>
       <text>Cover</text>
@@ -96,29 +100,38 @@ class Epub():
     </navLabel>
     <content src="Text/intro.xhtml"/>
   </navPoint>''')
-            contents = self.re_sort_cons(contents)
-            #i = 2
+            contents, flag = self.re_sort_cons(contents)
+            #i = 0
             j = 2
-            for chaps in contents:
+            for rolls in contents:
                 j += 1
                 #;i += 1
-                f.write('\n  <navPoint id="np_{0}" playOrder={0}>'.format(str(j)))
+                f.write('\n  <navPoint id="np_{0}" playOrder="{0}">'.format(str(j)))
                 f.write('\n    <navLabel>')
-                f.write('\n      <text>%s</text>' %chaps[0])
+                if flag:
+                    f.write('\n      <text>%s</text>' %rolls[0])
+                else:
+                    f.write('\n      <text>{0} {1}</text>'.format(rolls[0], rolls[1]))
                 f.write('\n    </navLabel>')
-                for chap in chaps[1:]:
-                    j += 1
-                    f.write('\n    <navPoint id="np_{0}" playOrder={0}>'.format(str(j)))
-                    f.write('\n      <navLabel>')
-                    f.write('\n        <text>{0} {1}</text>'.format(chap[0], chap[1]))
-                    f.write('\n      <navLabel>')
-                    f.write('\n      <content src="Text/{}.xhtml"/>'.format("chap_"+chap[0]))
-                    f.write('\n    </navPiont>')
+                if flag:
+                    f.write('\n    <content src="Text/{}.xhtml"/>'.format("chap_"+rolls[1][0]))
+                    #i += 1
+                else:
+                    f.write('\n    <content src="Text/{}.xhtml"/>'.format("chap_"+rolls[0]))
+                if flag:
+                	for chap in rolls[1:]:
+                		j += 1
+                		f.write('\n    <navPoint id="np_{0}" playOrder="{0}">'.format(str(j)))
+                		f.write('\n      <navLabel>')
+                		f.write('\n        <text>{0} {1}</text>'.format(chap[0], chap[1]))
+                		f.write('\n      </navLabel>')
+                		f.write('\n      <content src="Text/{}.xhtml"/>'.format("chap_"+chap[0]))
+                		f.write('\n    </navPiont>')
                 f.write('\n  </navPoint>')
             f.write("\n</navMap>")
         
     def write_text(self, title, text):# title输入列表
-        filename = self.filename + "\\OEBPS\\Text\\chap_{}.xhtml".format(title[0]) 
+        filename = os.path.join(self.filename, "OEBPS", "Text", "chap_{}.xhtml".format(title[0]))
         with open(filename, "w", encoding="utf-8") as f:
             f.write('<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"\n"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">\n<html xmlns="http://www.w3.org/1999/xhtml">\n')
             f.write('\n<head>')
@@ -134,7 +147,7 @@ class Epub():
             f.write('\n</html>')
 
     def write_coverandintro(self):
-        filename = self.filename + "\\OEBPS\\Text\\cover.xhtml"
+        filename = os.path.join(self.filename, "OEBPS", "Text", "cover.xhtml")
         with open(filename, "w", encoding="utf-8") as f:
             f.write('''<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -151,23 +164,23 @@ class Epub():
 </body>
  
 </html>''')
-        filename = self.filename + "\\OEBPS\\Text\\intro.xhtml"
+        filename = os.path.join(self.filename, "OEBPS", "Text", "intro.xhtml")
         with open(filename, "w", encoding="utf-8") as f:
             f.write('<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"\n"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">\n<html xmlns="http://www.w3.org/1999/xhtml">')
             f.write('\n<head>\n  <meta charset="utf-8"/>\n  <title>intro</title>\n</head>')
             f.write('\n<body>\n  <h1>简介</h1>')
-            f.write('\n  <p>Intro</p>')
+            #f.write('\n  <p>Intro</p>')
             for para in self.intro.split("\n"):
                 f.write('\n  <p>%s</p>'%para)
-            f.write('\n  <p>Summary</p>')
+            f.write('\n  <h1>文案</h1>')
             for para in self.summary.split("\n"):
                 f.write('\n  <p>%s</p>'%para)
             f.write('\n</body>\n</html>')
 
     def packet(self):
-        with open(self.filename + "\\OEBPS\\content.opf", "a", encoding="utf-8") as f:
+        with open(os.path.join(self.filename, "OEBPS", "content.opf"), "a", encoding="utf-8") as f:
             f.write("\n</package>")
-        with open(self.filename + "\\OEBPS\\toc.ncx", "a", encoding="utf-8") as f:
+        with open(os.path.join(self.filename, "OEBPS","toc.ncx"), "a", encoding="utf-8") as f:
             f.write("\n</ncx>")
 
         file_list = []
@@ -176,8 +189,9 @@ class Epub():
                 apath = os.path.join(maindir, file_name)
                 file_list.append(apath)
         z = zipfile.ZipFile(self.filename + ".epub", "w", zipfile.ZIP_STORED)
+        sep = os.sep
         for file in file_list:
-            new_file = "\\".join(file.split("\\")[1:])
-            print(file)
-            z.write(file, new_file)
+        	new_file = sep.join(file.split(sep)[1:])
+        	z.write(file, new_file)
+        	print(file)
         z.close()

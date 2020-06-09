@@ -3,6 +3,7 @@ import requests
 from bs4 import BeautifulSoup
 import json
 from epub import Epub
+from os import path
 
 def get_config():
     with open("config.json", 'r') as f:
@@ -154,7 +155,7 @@ def get_pic(novelid, file_name, session):
     soup = BeautifulSoup(r.text,'html.parser')
     pic_url = soup.select("img.noveldefaultimage")[0].get("src")
     p = session.get(pic_url)
-    filename = file_name + "\\OEBPS\\Images\\cover.jpg" 
+    filename = path.join(file_name, "OEBPS", "Images", "cover.jpg")
     with open(filename, "wb") as f:
         f.write(p.content)
 
@@ -183,5 +184,5 @@ if __name__ == "__main__":
             session = login_with_password(config["loginname"], config["loginpass"])
     else:
         session = requests.session()
-    write_to_txt(config["novelids"],config["login"], session)
-    #write_to_epub(config["novelids"],config["login"], session)
+    #write_to_txt(config["novelids"],config["login"], session)
+    write_to_epub(config["novelids"],config["login"], session)
