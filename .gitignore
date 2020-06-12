@@ -2,3 +2,4 @@
 *.epu
 __pycache__
 .vscode/
+get_authors_.py

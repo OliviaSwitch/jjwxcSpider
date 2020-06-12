@@ -11,7 +11,7 @@ def get_config():
         return dict
 
 def login_with_cookie(cookies):
-    print("正在登录")
+    print("正在登录…")
     session = requests.session()
     headers = {
         "User-Agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36 Edg/81.0.416.72"
@@ -32,7 +32,7 @@ def login_with_cookie(cookies):
     return session
 
 def login_with_password(username, password):
-    print("正在登录")
+    print("正在登录…")
     session = requests.session()
     headers = {
         "User-Agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36 Edg/81.0.416.72"
