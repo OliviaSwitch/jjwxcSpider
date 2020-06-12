@@ -145,8 +145,8 @@ class Epub():
             f.write('\n  <title>{0} {1}</title>'.format(title[0], title[1]))
             f.write('\n</head>\n')
             f.write('\n<body>')
-            f.write('\n  <h1>{0} {1}</h1>'.format(title[0], title[1]))
-            f.write('\n  <h4>{0}</h4>'.format(title[2]))
+            f.write('\n  <h2>{0} {1}</h2>'.format(title[0], title[1]))
+            f.write('\n  <h3>{0}</h3>'.format(title[2]))
             for para in text.split("\n"):
                 f.write('\n  <p>%s</p>'%para)
             f.write('\n</body>')
