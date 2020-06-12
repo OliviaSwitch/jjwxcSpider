@@ -11,6 +11,7 @@ def get_config():
         return dict
 
 def login_with_cookie(cookies):
+    print("正在登录")
     session = requests.session()
     headers = {
         "User-Agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36 Edg/81.0.416.72"
@@ -31,6 +32,7 @@ def login_with_cookie(cookies):
     return session
 
 def login_with_password(username, password):
+    print("正在登录")
     session = requests.session()
     headers = {
         "User-Agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36 Edg/81.0.416.72"
@@ -51,6 +53,7 @@ def login_with_password(username, password):
     return session
 
 def get_summary(novelid, session):
+    print("获取简介…")
     r = session.get("http://www.jjwxc.net/onebook.php?novelid=" + str(novelid))
     r.encoding = 'GBK'
     soup = BeautifulSoup(r.text,'html.parser')
@@ -82,6 +85,7 @@ def get_link(novelid, n ,session):
     return link
 
 def get_contents(novelid, VIP, session):
+    print("获取目录…")
     r = session.get("http://www.jjwxc.net/onebook.php?novelid=" + str(novelid))
     r.encoding = 'GBK'
     soup = BeautifulSoup(r.text,'html.parser')
@@ -155,6 +159,7 @@ def write_to_txt(novelids, login, session):
         print("done")
 
 def get_pic(novelid, file_name, session):
+    print("获取图片…")
     r = session.get("http://www.jjwxc.net/onebook.php?novelid=" + str(novelid))
     r.encoding = 'GBK'
     soup = BeautifulSoup(r.text,'html.parser')
@@ -176,6 +181,7 @@ def write_to_epub(novelids, login, session):
         for chapter in contents:
             if chapter[0]:
                 text = get_all_text(chapter[2], session)
+                print(chapter[1][0], " ", chapter[1][1])
                 e.write_text(chapter[1], text)
         e.packet()
 

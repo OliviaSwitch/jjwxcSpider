@@ -1,3 +1,4 @@
 *.txt
 *.epu
-__pycache__b
+__pycache__
+.vscode/

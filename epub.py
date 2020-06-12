@@ -184,6 +184,7 @@ class Epub():
             f.write('\n</body>\n</html>')
 
     def packet(self):
+        print("打包为epub文件…")
         with open(os.path.join(self.filename, "OEBPS", "content.opf"), "a", encoding="utf-8") as f:
             f.write("\n</package>")
         with open(os.path.join(self.filename, "OEBPS","toc.ncx"), "a", encoding="utf-8") as f:
@@ -199,6 +200,6 @@ class Epub():
         for file in file_list:
         	new_file = sep.join(file.split(sep)[1:])
         	z.write(file, new_file)
-        	print(file)
+        	#print(file)
         rmtree(self.filename)
         z.close()
