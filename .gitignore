@@ -1,4 +1,4 @@
 *.txt
 *.epub
-__pycache__
+__pycache__/
 .vscode/
