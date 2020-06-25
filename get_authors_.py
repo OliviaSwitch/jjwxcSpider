@@ -54,7 +54,7 @@ def get_all_list(url):
     return ser_and_nov_sec
 
 if __name__ == "__main__":
-    print("本程序用于获取某个作者的所有作品。")
+    print("本程序用于获取某个作者的所有作品ID。")
     #author_id = "38144"
     author_id = input("请输入专栏id:")
     url = "https://m.jjwxc.net/wapauthor/" + author_id
@@ -67,6 +67,7 @@ if __name__ == "__main__":
             if a_id[0]:
                 novelid.append(a_id[1]['novelid'])
         print(novelid)
+    '''
     elif not is_all:
         select = input("请输入筛选选项（“作者自分类”、“类型”、“进度”、“字数”、“收藏”中选择输入，如需多个请在中间加入半角逗号“,”）：")
         selects = select.split(",")
@@ -77,3 +78,4 @@ if __name__ == "__main__":
             eval("select_" + str(i)) = select()
     else:
         print("请输入“0”或“1”。")
+    '''
