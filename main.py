@@ -80,7 +80,7 @@ def get_link(novelid, n ,session):
     r = session.get("https://m.jjwxc.net/book2/" + str(novelid) + "?more=0&whole=1")
     r.encoding = 'GBK'
     soup = BeautifulSoup(r.text,'html.parser')
-    all_links = soup.select("div.grid-c > div:nth-child(9) > div:nth-child(3) a")
+    all_links = soup.select("body > div.grid-c > div:nth-child(9) > div:nth-child(4) a")
     link = all_links[n].get("href")
     return link
 
