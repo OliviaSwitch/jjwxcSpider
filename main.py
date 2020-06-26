@@ -80,7 +80,8 @@ def get_link(novelid, n ,session):
     r = session.get("https://m.jjwxc.net/book2/" + str(novelid) + "?more=0&whole=1")
     r.encoding = 'GBK'
     soup = BeautifulSoup(r.text,'html.parser')
-    all_links = soup.select("body > div.grid-c > div:nth-child(9) > div:nth-child(4) a")
+    b_module = soup.select("div.grid-c > div[class='b module']")[1]
+    all_links = b_module.select("div[style]")[3].select("a")
     link = all_links[n].get("href")
     return link
 
@@ -113,7 +114,7 @@ def get_contents(novelid, VIP, session):
                         break
                 except:
                     continue
-    return author, name, contents
+    return author, name, contents#[[0, "roll_1"], [1, ["chap_1", "tit_1", "sum_1"], link]]
 
 def get_all_text(url, session):
     r = session.get(url)

@@ -1,7 +1,7 @@
 # jjwxcSpider
 ## 关于使用
 - 在指定目录执行`git clone https://github.com/gaoliujiadi/jjwxcSpider.git` 或 直接下载`.zip`文件。
-- `cd`至`../jjwxcSpiser/`目录下，如为Window系统则执行`venv\Scripts\activate`;如Linux或Mac系统则执行`venv/bin/activate`。
+- `cd`至`../jjwxcSpiser/`目录下，如为Window系统则执行`venv\Scripts\activate`;如Linux或Mac系统则执行`source venv/Scripts/activate`。
 #### 设置“comfig.json”
 - "login"填"true"or"false"选择是否需要登录，如果需要登录则继续选填以下几项。
 - "epub"填"true"or"false"选择是否需要epub格式书籍。
@@ -19,3 +19,7 @@
 材料：
 - 作者专栏号
 - `main.py`的准备工作
+
+#### 因有锁章，软件无法读取
+后缀改成`.zip`解压，找到锁章所在文件，如：`OEBPS\Text\chap_1.xhtml`，将转义字符删除，如：`<` `>`等。  
+最后压缩为`.epub`文件

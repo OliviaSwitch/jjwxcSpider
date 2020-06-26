@@ -56,10 +56,10 @@ class Epub():
         with open(filename, "wb") as f:
             f.write(content)
 
-    def re_sort_cons(self,contents):
+    def re_sort_cons(self,contents):#[[0, "roll_1"], [1, [chap_1, tit_1, sum_1], link]]
         i = 0
         cons = []
-        try:
+        try:# [["roll_1", ["chap_1", "tit_1", "sum_1"]]]
             for chap in contents:
                 if not chap[0]:
                     roll = [chap[1]]
@@ -117,7 +117,7 @@ class Epub():
                 if flag:
                     f.write('\n      <text>%s</text>' %rolls[0])
                 else:
-                    f.write('\n      <text>{0} {1}</text>'.format(rolls[0], rolls[1]))
+                    f.write('\n      <text>{0} {1}        {2}</text>'.format(rolls[0], rolls[1], rolls[2]))
                 f.write('\n    </navLabel>')
                 if flag:
                     f.write('\n    <content src="Text/{}.xhtml"/>'.format("chap_"+rolls[1][0]))
@@ -129,7 +129,7 @@ class Epub():
                 		j += 1
                 		f.write('\n    <navPoint id="np_{0}" playOrder="{0}">'.format(str(j)))
                 		f.write('\n      <navLabel>')
-                		f.write('\n        <text>{0} {1}</text>'.format(chap[0], chap[1]))
+                		f.write('\n        <text>{0} {1}        {2}</text>'.format(chap[0], chap[1], chap[2]))
                 		f.write('\n      </navLabel>')
                 		f.write('\n      <content src="Text/{}.xhtml"/>'.format("chap_"+chap[0]))
                 		f.write('\n    </navPoint>')
@@ -139,6 +139,7 @@ class Epub():
     def write_text(self, title, text):# title输入列表
         filename = os.path.join(self.filename, "OEBPS", "Text", "chap_{}.xhtml".format(title[0]))
         with open(filename, "w", encoding="utf-8") as f:
+            #我吐了因为垃圾晋江用转义以及一系列问题，有锁章的小说软件会读不了，回头再搞
             f.write('<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"\n"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">\n<html xmlns="http://www.w3.org/1999/xhtml">\n')
             f.write('\n<head>')
             f.write('\n  <meta charset="utf-8"/>')
