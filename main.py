@@ -114,7 +114,7 @@ def get_contents(novelid, VIP, session):
                         break
                 except:
                     continue
-    return author, name, contents#[[0, "roll_1"], [1, ["chap_1", "tit_1", "sum_1"], link]]
+    return author, name, contents #[[0, "roll_1"], [1, ["chap_1", "tit_1", "sum_1"], link]]
 
 def get_all_text(url, session):
     r = session.get(url)

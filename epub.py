@@ -2,6 +2,7 @@
 import zipfile
 import os
 from shutil import rmtree
+from cgi import escape 
 
 class Epub():
     def __init__(self):
@@ -139,17 +140,17 @@ class Epub():
     def write_text(self, title, text):# title输入列表
         filename = os.path.join(self.filename, "OEBPS", "Text", "chap_{}.xhtml".format(title[0]))
         with open(filename, "w", encoding="utf-8") as f:
-            #我吐了因为垃圾晋江用转义以及一系列问题，有锁章的小说软件会读不了，回头再搞
+            
             f.write('<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"\n"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">\n<html xmlns="http://www.w3.org/1999/xhtml">\n')
             f.write('\n<head>')
             f.write('\n  <meta charset="utf-8"/>')
-            f.write('\n  <title>{0} {1}</title>'.format(title[0], title[1]))
+            f.write('\n  <title>{0} {1}</title>'.format(title[0], escape(title[1])))
             f.write('\n</head>\n')
             f.write('\n<body>')
-            f.write('\n  <h2>{0} {1}</h2>'.format(title[0], title[1]))
-            f.write('\n  <h3>{0}</h3>'.format(title[2]))
+            f.write('\n  <h2>{0} {1}</h2>'.format(title[0], escape(title[1])))
+            f.write('\n  <h3>{0}</h3>'.format(escape(title[2])))
             for para in text.split("\n"):
-                f.write('\n  <p>%s</p>'%para)
+                f.write('\n  <p>%s</p>'%escape(para))
             f.write('\n</body>')
             f.write('\n</html>')
 
