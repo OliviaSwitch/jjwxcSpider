@@ -1,7 +1,20 @@
 # jjwxcSpider
+
+
 ## 关于使用
-- 在指定目录执行`git clone https://github.com/gaoliujiadi/jjwxcSpider.git` 或 直接下载`.zip`文件。
-- `cd`至`../jjwxcSpiser/`目录下，如为Window系统则执行`venv\Scripts\activate`;如Linux或Mac系统则执行`source venv/Scripts/activate`。
+#### clone
+```
+$ git clone https://github.com/gaoliujiadi/jjwxcSpider.git
+$ cd watchlist
+```
+
+#### 创建环境
+```
+$ python -m venv env  # use `virtualenv env` for Python2, use `python3 ...` for Python3 on Linux & macOS
+$ source env/bin/activate  # use `env\Scripts\activate` on Windows
+$ pip install -r requirements.txt
+```
+
 #### 设置“comfig.json”
 - "login"填"true"or"false"选择是否需要登录，如果需要登录则继续选填以下几项。
 - "epub"填"true"or"false"选择是否需要epub格式书籍。
@@ -14,7 +27,13 @@
     - 网页端这在地址栏中，跟在“novelid”后。
 - 最后执行`python main.py`
 
+#### 运行
+```
+$ python main.py
+```
+
 ## `get_authors_.py`
 用于获取某个作者全部作品的id号。
 材料：
 - 作者专栏号
+- `$ python get_authors_.py`
