@@ -25,7 +25,6 @@ $ pip install -r requirements.txt
   - 小说书号的获取：
     - app端可以点开作者专栏，每本小说的左下角，显示`ID:XXXXXX`，点击即可复制。
     - 网页端这在地址栏中，跟在“novelid”后。
-- 最后执行`python main.py`
 
 #### 运行
 ```
