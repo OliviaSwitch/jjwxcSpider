@@ -6,7 +6,7 @@
 #### clone
 ```
 $ git clone https://github.com/gaoliujiadi/jjwxcSpider.git
-$ cd watchlist
+$ cd jjwxcSpider
 ```
 
 #### 创建环境
