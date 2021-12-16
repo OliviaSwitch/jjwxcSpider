@@ -14,8 +14,10 @@ class Epub():
     def init(self):
         name, author = self.name, self.author
         self.filename = name + "_" + author
+        
         while os.path.exists(self.filename):
             self.filename = self.filename + "_1"
+            #TODO: change "_1"
         os.mkdir(self.filename)
         os.mkdir(os.path.join(self.filename, "META-INF"))
         os.mkdir(os.path.join(self.filename, "OEBPS"))
